@@ -16,7 +16,6 @@ rm $TMPFOLDER/code/Instruction_Memory.v
 rm $TMPFOLDER/code/Data_Memory.v
 rm $TMPFOLDER/code/PC.v
 rm $TMPFOLDER/code/Registers.v
-rm $TMPFOLDER/code/testbench.v
 
 zip -r ${TARGET}.zip $TMPFOLDER
 
