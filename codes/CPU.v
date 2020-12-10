@@ -9,6 +9,7 @@
 // `include "Registers.v"
 `include "Sign_Extend.v"
 `include "Hazard_Detection.v"
+`include "Pipeline_Registers.v"
 
 module CPU (
     clk_i,
@@ -22,7 +23,7 @@ input rst_i;
 input start_i;
 
 wire [31:0] instr;
-assign instr = Instruction_Memory.instr_o;
+assign instr = PipelineRegIFID.instr_o;
 
 wire Flush;
 
@@ -44,6 +45,13 @@ PC PC(
 
 Instruction_Memory Instruction_Memory(
     .addr_i     (PC.pc_o),
+    .instr_o    ()
+);
+
+PipelineRegIFID PipelineRegIFID(
+    .clk_i      (clk_i),
+    .rst_i      (rst_i),
+    .instr_i    (Instruction_Memory.instr_o),
     .instr_o    ()
 );
 
