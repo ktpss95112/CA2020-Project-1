@@ -22,8 +22,6 @@ input clk_i;
 input rst_i;
 input start_i;
 
-wire [31:0] instr;
-assign instr = PipelineRegIFID.instr_o;
 
 wire Flush;
 
@@ -56,7 +54,7 @@ PipelineRegIFID PipelineRegIFID(
 );
 
 Control Control(
-    .Op_i       (instr[6:0]),
+    .Op_i       (PipelineRegIFID.instr_o[6:0]),
     .RegWrite_o (),
     .MemtoReg_o (),
     .MemRead_o  (),
@@ -68,9 +66,9 @@ Control Control(
 
 Registers Registers(
     .clk_i      (clk_i),
-    .RS1addr_i  (instr[19:15]),
-    .RS2addr_i  (instr[24:20]),
-    .RDaddr_i   (instr[11:7]),
+    .RS1addr_i  (PipelineRegIFID.instr_o[19:15]),
+    .RS2addr_i  (PipelineRegIFID.instr_o[24:20]),
+    .RDaddr_i   (PipelineRegIFID.instr_o[11:7]),
     .RDdata_i   (MUX_RegWriteSrc.data_o),
     .RegWrite_i (Control.RegWrite_o),
     .RS1data_o  (),
@@ -78,8 +76,33 @@ Registers Registers(
 );
 
 Sign_Extend ImmGen(
-    .data_i     (instr[31:20]),
+    .data_i     (PipelineRegIFID.instr_o[31:20]),
     .data_o     ()
+);
+
+PipelineRegIDEX PipelineRegIDEX(
+    .clk_i (clk_i),
+    .rst_i (rst_i),
+    .RegWrite_i (Control.RegWrite_o),
+    .MemtoReg_i (Control.MemtoReg_o),
+    .MemRead_i (Control.MemRead_o),
+    .MemWrite_i (Control.MemWrite_o),
+    .ALUOp_i (Control.ALUOp_o),
+    .ALUSrc_i (Control.ALUSrc_o),
+    .RS1data_i (Registers.RS1data_o),
+    .RS2data_i (Registers.RS2data_o),
+    .imm_i (ImmGen.data_o),
+    .instr_i (PipelineRegIFID.instr_o),
+    .RegWrite_o (),
+    .MemtoReg_o (),
+    .MemRead_o (),
+    .MemWrite_o (),
+    .ALUOp_o (),
+    .ALUSrc_o (),
+    .RS1data_o (),
+    .RS2data_o (),
+    .imm_o (),
+    .instr_o ()
 );
 
 MUX32 MUX_ALUSrc(
@@ -97,7 +120,7 @@ ALU ALU(
 );
 
 ALU_Control ALU_Control(
-    .funct_i    ({instr[31:25], instr[14:12]}),
+    .funct_i    ({PipelineRegIDEX.instr_o[31:25], PipelineRegIDEX.instr_o[14:12]}),
     .ALUOp_i    (Control.ALUOp_o),
     .ALUCtrl_o  ()
 );
