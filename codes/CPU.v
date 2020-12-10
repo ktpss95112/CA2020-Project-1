@@ -68,7 +68,7 @@ Registers Registers(
     .clk_i      (clk_i),
     .RS1addr_i  (IFID.instr_o[19:15]),
     .RS2addr_i  (IFID.instr_o[24:20]),
-    .RDaddr_i   (IFID.instr_o[11:7]),
+    .RDaddr_i   (MEMWB.RDaddr_o),
     .RDdata_i   (MUX_RegWriteSrc.data_o),
     .RegWrite_i (Control.RegWrite_o),
     .RS1data_o  (),
@@ -107,8 +107,8 @@ PipelineRegIDEX IDEX(
 
 MUX32 MUX_ALUSrc(
     .data0_i    (Registers.RS2data_o),
-    .data1_i    (ImmGen.data_o),
-    .select_i   (Control.ALUSrc_o),
+    .data1_i    (IDEX.imm_o),
+    .select_i   (IDEX.ALUSrc_o),
     .data_o     ()
 );
 
@@ -121,7 +121,7 @@ ALU ALU(
 
 ALU_Control ALU_Control(
     .funct_i    ({IDEX.instr_o[31:25], IDEX.instr_o[14:12]}),
-    .ALUOp_i    (Control.ALUOp_o),
+    .ALUOp_i    (IDEX.ALUOp_o),
     .ALUCtrl_o  ()
 );
 
@@ -147,10 +147,10 @@ PipelineRegEXMEM EXMEM(
 
 Data_Memory Data_Memory(
     .clk_i       (clk_i),
-    .addr_i      (ALU.data_o),
-    .MemRead_i   (Control.MemRead_o),
-    .MemWrite_i  (Control.MemWrite_o),
-    .data_i      (Registers.RS2data_o),
+    .addr_i      (EXMEM.ALUResult_o),
+    .MemRead_i   (EXMEM.MemRead_o),
+    .MemWrite_i  (EXMEM.MemWrite_o),
+    .data_i      (EXMEM.RS2data_o),
     .data_o      ()
 );
 
@@ -170,9 +170,9 @@ PipelineRegMEMWB MEMWB(
     .RDaddr_o           ()
 );
 MUX32 MUX_RegWriteSrc(
-    .data0_i    (ALU.data_o),
-    .data1_i    (Data_Memory.data_o),
-    .select_i   (Control.MemtoReg_o),
+    .data0_i    (MEMWB.ALUResult_o),
+    .data1_i    (MEMWB.Memdata_o),
+    .select_i   (MEMWB.MemtoReg_o),
     .data_o     ()
 );
 
