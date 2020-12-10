@@ -144,6 +144,7 @@ PipelineRegEXMEM EXMEM(
     .RegWrite_o                 (),
     .RDaddr_o                   ()
 );
+
 Data_Memory Data_Memory(
     .clk_i       (clk_i),
     .addr_i      (ALU.data_o),
@@ -153,6 +154,21 @@ Data_Memory Data_Memory(
     .data_o      ()
 );
 
+PipelineRegMEMWB MEMWB(
+    .clk_i              (clk_i),
+    .rst_i              (rst_i),
+    .RegWrite_i         (EXMEM.RegWrite_o),
+    .MemtoReg_i         (EXMEM.MemtoReg_o),
+    .ALUResult_i        (EXMEM.ALUResult_o),
+    .Memdata_i          (Data_Memory.data_o),
+    .RDaddr_i           (EXMEM.RDaddr_o),
+
+    .RegWrite_o         (),
+    .Memdata_o          (),
+    .ALUResult_o        (),
+    .MemtoReg_o         (),
+    .RDaddr_o           ()
+);
 MUX32 MUX_RegWriteSrc(
     .data0_i    (ALU.data_o),
     .data1_i    (Data_Memory.data_o),
