@@ -46,7 +46,7 @@ Instruction_Memory Instruction_Memory(
     .instr_o    ()
 );
 
-PipelineRegIFID PipelineRegIFID(
+PipelineRegIFID IFID(
     .clk_i      (clk_i),
     .rst_i      (rst_i),
     .instr_i    (Instruction_Memory.instr_o),
@@ -54,7 +54,7 @@ PipelineRegIFID PipelineRegIFID(
 );
 
 Control Control(
-    .Op_i       (PipelineRegIFID.instr_o[6:0]),
+    .Op_i       (IFID.instr_o[6:0]),
     .RegWrite_o (),
     .MemtoReg_o (),
     .MemRead_o  (),
@@ -66,9 +66,9 @@ Control Control(
 
 Registers Registers(
     .clk_i      (clk_i),
-    .RS1addr_i  (PipelineRegIFID.instr_o[19:15]),
-    .RS2addr_i  (PipelineRegIFID.instr_o[24:20]),
-    .RDaddr_i   (PipelineRegIFID.instr_o[11:7]),
+    .RS1addr_i  (IFID.instr_o[19:15]),
+    .RS2addr_i  (IFID.instr_o[24:20]),
+    .RDaddr_i   (IFID.instr_o[11:7]),
     .RDdata_i   (MUX_RegWriteSrc.data_o),
     .RegWrite_i (Control.RegWrite_o),
     .RS1data_o  (),
@@ -76,11 +76,11 @@ Registers Registers(
 );
 
 Sign_Extend ImmGen(
-    .data_i     (PipelineRegIFID.instr_o[31:20]),
+    .data_i     (IFID.instr_o[31:20]),
     .data_o     ()
 );
 
-PipelineRegIDEX PipelineRegIDEX(
+PipelineRegIDEX IDEX(
     .clk_i                     (clk_i),
     .rst_i                     (rst_i),
     .RegWrite_i                (Control.RegWrite_o),
@@ -92,7 +92,7 @@ PipelineRegIDEX PipelineRegIDEX(
     .RS1data_i                 (Registers.RS1data_o),
     .RS2data_i                 (Registers.RS2data_o),
     .imm_i                     (ImmGen.data_o),
-    .instr_i                   (PipelineRegIFID.instr_o),
+    .instr_i                   (IFID.instr_o),
     .RegWrite_o                (),
     .MemtoReg_o                (),
     .MemRead_o                 (),
@@ -120,11 +120,30 @@ ALU ALU(
 );
 
 ALU_Control ALU_Control(
-    .funct_i    ({PipelineRegIDEX.instr_o[31:25], PipelineRegIDEX.instr_o[14:12]}),
+    .funct_i    ({IDEX.instr_o[31:25], IDEX.instr_o[14:12]}),
     .ALUOp_i    (Control.ALUOp_o),
     .ALUCtrl_o  ()
 );
 
+PipelineRegEXMEM EXMEM(
+    .clk_i                      (clk_i),
+    .rst_i                      (rst_i),
+    .RegWrite_i                 (IDEX.RegWrite_o),
+    .MemtoReg_i                 (IDEX.MemtoReg_o),
+    .MemRead_i                  (IDEX.MemtoReg_o),
+    .MemWrite_i                 (IDEX.MemWrite_o),
+    .ALUResult_i                (ALU.data_o),
+    .RS2data_i                  (Registers.RS2data_o),
+    .RDaddr_i                   (IDEX.instr_o[11:7]),
+    
+    .ALUResult_o                (),
+    .RS2data_o                  (),
+    .MemRead_o                  (),
+    .MemtoReg_o                 (),
+    .MemWrite_o                 (),
+    .RegWrite_o                 (),
+    .RDaddr_o                   ()
+);
 Data_Memory Data_Memory(
     .clk_i       (clk_i),
     .addr_i      (ALU.data_o),
