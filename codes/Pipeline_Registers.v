@@ -50,29 +50,29 @@ module PipelineRegIDEX (
     instr_o,
 );
 
-input clk_i;
-input rst_i;
-input RegWrite_i;
-input MemtoReg_i;
-input MemRead_i;
-input MemWrite_i;
-input [1:0] ALUOp_i;
-input ALUSrc_i;
-input [31:0] RS1data_i;
-input [31:0] RS2data_i;
-input [31:0] imm_i;
-input [31:0] instr_i;
+input                         clk_i;
+input                         rst_i;
+input                         RegWrite_i;
+input                         MemtoReg_i;
+input                         MemRead_i;
+input                         MemWrite_i;
+input           [1:0]         ALUOp_i;
+input                         ALUSrc_i;
+input           [31:0]        RS1data_i;
+input           [31:0]        RS2data_i;
+input           [31:0]        imm_i;
+input           [31:0]        instr_i;
 
-output reg RegWrite_o;
-output reg MemtoReg_o;
-output reg MemRead_o;
-output reg MemWrite_o;
-output reg [1:0] ALUOp_o;
-output reg ALUSrc_o;
-output reg [31:0] RS1data_o;
-output reg [31:0] RS2data_o;
-output reg [31:0] instr_o;
-output reg [31:0] imm_o;
+output reg                    RegWrite_o;
+output reg                    MemtoReg_o;
+output reg                    MemRead_o;
+output reg                    MemWrite_o;
+output reg      [1:0]         ALUOp_o;
+output reg                    ALUSrc_o;
+output reg      [31:0]        RS1data_o;
+output reg      [31:0]        RS2data_o;
+output reg      [31:0]        instr_o;
+output reg      [31:0]        imm_o;
 
 always@(posedge clk_i or posedge rst_i) begin
     if(rst_i) begin
@@ -104,6 +104,12 @@ end
 endmodule
 
 module PipelineRegEXMEM (
+    // clk_i,
+    // rst_i,
+    // RegWrite_i,
+    // MemtoReg_i,
+    // MemRead_i,
+    // MemWrite_i,
 );
 
 endmodule
