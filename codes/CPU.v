@@ -135,7 +135,6 @@ PipelineRegEXMEM EXMEM(
     .ALUResult_i                (ALU.data_o),
     .RS2data_i                  (Registers.RS2data_o),
     .RDaddr_i                   (IDEX.instr_o[11:7]),
-    
     .ALUResult_o                (),
     .RS2data_o                  (),
     .MemRead_o                  (),
@@ -162,7 +161,6 @@ PipelineRegMEMWB MEMWB(
     .ALUResult_i        (EXMEM.ALUResult_o),
     .Memdata_i          (Data_Memory.data_o),
     .RDaddr_i           (EXMEM.RDaddr_o),
-
     .RegWrite_o         (),
     .Memdata_o          (),
     .ALUResult_o        (),
