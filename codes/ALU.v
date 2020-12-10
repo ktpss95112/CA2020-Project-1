@@ -20,13 +20,13 @@ assign Zero_o = data_o == 0;
 
 always @(data1_i, data2_i, ALUCtrl_i) begin
     case (ALUCtrl_i)
-        `ALU_CONTROL_CONSTANT_ADD: data_o = data1_i + data2_i;
-        `ALU_CONTROL_CONSTANT_SUB: data_o = data1_i - data2_i;
-        `ALU_CONTROL_CONSTANT_MUL: data_o = data1_i * data2_i;
-        `ALU_CONTROL_CONSTANT_AND: data_o = data1_i & data2_i;
-        `ALU_CONTROL_CONSTANT_XOR: data_o = data1_i ^ data2_i;
-        `ALU_CONTROL_CONSTANT_SLL: data_o = data1_i << data2_i[4:0];
-        `ALU_CONTROL_CONSTANT_SRA: data_o = $signed(data1_i) >>> data2_i[4:0];
+        `ALU_CONTROL_CONSTANT_ADD: data_o <= data1_i + data2_i;
+        `ALU_CONTROL_CONSTANT_SUB: data_o <= data1_i - data2_i;
+        `ALU_CONTROL_CONSTANT_MUL: data_o <= data1_i * data2_i;
+        `ALU_CONTROL_CONSTANT_AND: data_o <= data1_i & data2_i;
+        `ALU_CONTROL_CONSTANT_XOR: data_o <= data1_i ^ data2_i;
+        `ALU_CONTROL_CONSTANT_SLL: data_o <= data1_i << data2_i[4:0];
+        `ALU_CONTROL_CONSTANT_SRA: data_o <= $signed(data1_i) >>> data2_i[4:0];
     endcase
 end
 

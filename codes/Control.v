@@ -27,48 +27,48 @@ output reg          Branch_o;
 always @(Op_i) begin
     case (Op_i)
         `OPCODE_R_TYPE: begin
-            RegWrite_o  = 1'b1;
-            MemtoReg_o  = 1'b0;
-            MemRead_o   = 1'b0;
-            MemWrite_o  = 1'b0;
-            ALUOp_o     = 2'b01;
-            ALUSrc_o    = 1'b0;
+            RegWrite_o  <= 1'b1;
+            MemtoReg_o  <= 1'b0;
+            MemRead_o   <= 1'b0;
+            MemWrite_o  <= 1'b0;
+            ALUOp_o     <= 2'b01;
+            ALUSrc_o    <= 1'b0;
         end
 
         `OPCODE_I_TYPE: begin
-            RegWrite_o  = 1'b1;
-            MemtoReg_o  = 1'b0;
-            MemRead_o   = 1'b0;
-            MemWrite_o  = 1'b0;
-            ALUOp_o     = 2'b00;
-            ALUSrc_o    = 1'b1;
+            RegWrite_o  <= 1'b1;
+            MemtoReg_o  <= 1'b0;
+            MemRead_o   <= 1'b0;
+            MemWrite_o  <= 1'b0;
+            ALUOp_o     <= 2'b00;
+            ALUSrc_o    <= 1'b1;
         end
 
         `OPCODE_LOAD: begin
-            RegWrite_o  = 1'b1;
-            MemtoReg_o  = 1'b1;
-            MemRead_o   = 1'b1;
-            MemWrite_o  = 1'b0;
-            ALUOp_o     = 2'b00;
-            ALUSrc_o    = 1'b1;
+            RegWrite_o  <= 1'b1;
+            MemtoReg_o  <= 1'b1;
+            MemRead_o   <= 1'b1;
+            MemWrite_o  <= 1'b0;
+            ALUOp_o     <= 2'b00;
+            ALUSrc_o    <= 1'b1;
         end
 
         `OPCODE_STORE: begin
-            RegWrite_o  = 1'b0;
-            MemtoReg_o  = 1'b0;
-            MemRead_o   = 1'b0;
-            MemWrite_o  = 1'b1;
-            ALUOp_o     = 2'b01;
-            ALUSrc_o    = 1'b1;
+            RegWrite_o  <= 1'b0;
+            MemtoReg_o  <= 1'b0;
+            MemRead_o   <= 1'b0;
+            MemWrite_o  <= 1'b1;
+            ALUOp_o     <= 2'b01;
+            ALUSrc_o    <= 1'b1;
         end
 
         `OPCODE_BRANCH: begin
-            RegWrite_o  = 1'b0;
-            MemtoReg_o  = 1'b0;
-            MemRead_o   = 1'b0;
-            MemWrite_o  = 1'b0;
-            ALUOp_o     = 2'b11;
-            ALUSrc_o    = 1'b0;
+            RegWrite_o  <= 1'b0;
+            MemtoReg_o  <= 1'b0;
+            MemRead_o   <= 1'b0;
+            MemWrite_o  <= 1'b0;
+            ALUOp_o     <= 2'b11;
+            ALUSrc_o    <= 1'b0;
         end
 
     endcase
