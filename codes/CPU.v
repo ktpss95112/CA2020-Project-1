@@ -10,6 +10,7 @@
 `include "Sign_Extend.v"
 `include "Hazard_Detection.v"
 `include "Pipeline_Registers.v"
+`include "Forwarding.v"
 
 module CPU (
     clk_i,
@@ -92,6 +93,8 @@ PipelineRegIDEX IDEX(
     .RS1data_i                 (Registers.RS1data_o),
     .RS2data_i                 (Registers.RS2data_o),
     .imm_i                     (ImmGen.data_o),
+    .RS1addr_i                 (IFID.instr_o[19:15]),
+    .RS2addr_i                 (IFID.instr_o[24:20]),
     .instr_i                   (IFID.instr_o),
     .RegWrite_o                (),
     .MemtoReg_o                (),
@@ -102,18 +105,20 @@ PipelineRegIDEX IDEX(
     .RS1data_o                 (),
     .RS2data_o                 (),
     .imm_o                     (),
-    .instr_o                   ()
+    .instr_o                   (),
+    .RS1addr_o                 (),
+    .RS2addr_o                 ()
 );
 
 MUX32 MUX_ALUSrc(
-    .data0_i    (Registers.RS2data_o),
+    .data0_i    (MUX_Forward_B.result_o),
     .data1_i    (IDEX.imm_o),
     .select_i   (IDEX.ALUSrc_o),
     .data_o     ()
 );
 
 ALU ALU(
-    .data1_i    (Registers.RS1data_o),
+    .data1_i    (MUX_Forward_A.result_o),
     .data2_i    (MUX_ALUSrc.data_o),
     .ALUCtrl_i  (ALU_Control.ALUCtrl_o),
     .data_o     ()
@@ -176,6 +181,33 @@ MUX32 MUX_RegWriteSrc(
 
 Hazard_Detection Hazard_Detection(
     .Stall_o    ()
+);
+
+Forwarding_Unit Forwarding_Unit(
+    .EXRs1_i        (IDEX.RS1addr_o),
+    .EXRs2_i        (IDEX.RS2addr_o),
+    .MEMRd_i        (EXMEM.RDaddr_o),
+    .MEMRegWrite_i  (EXMEM.RegWrite_o),
+    .WBRd_i         (MEMWB.RDaddr_o),
+    .WBRegWrite_i   (MEMWB.RegWrite_o),
+    .ForwardA_o     (),
+    .ForwardB_o     ()
+);
+
+MUXForward MUX_Forward_A(
+    select_i        (Forwarding_Unit.ForwardA_o),
+    MEMALUResult_i  (EXMEM.ALUResult_o),
+    WBWriteData_i   (MEMWB.ALUResult_o),
+    EXReadData_i    (IDEX.RS1data_o),
+    result_o        ()
+);
+
+MUXForward MUX_Forward_B(
+    select_i        (Forwarding_Unit.ForwardB_o),
+    MEMALUResult_i  (EXMEM.ALUResult_o),
+    WBWriteData_i   (MEMWB.ALUResult_o),
+    EXReadData_i    (IDEX.RS2data_o),
+    result_o        ()
 );
 
 endmodule
