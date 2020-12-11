@@ -38,9 +38,7 @@ module PipelineRegIDEX (
     RS2data_i,
     imm_i,
     instr_i,
-    RS1addr_i,
-    RS2addr_i,
-    
+
     RegWrite_o,
     MemtoReg_o,
     MemRead_o,
@@ -50,9 +48,7 @@ module PipelineRegIDEX (
     RS1data_o,
     RS2data_o,
     imm_o,
-    instr_o,
-    RS1addr_o,
-    RS2addr_o
+    instr_o
 );
 
 input                         clk_i;
@@ -126,7 +122,7 @@ module PipelineRegEXMEM (
     ALUResult_i,
     RS2data_i,
     RDaddr_i,
-    
+
     ALUResult_o,
     RS2data_o,
     MemRead_o,
@@ -198,7 +194,7 @@ input                   clk_i;
 input                   rst_i;
 input                   RegWrite_i;
 input                   MemtoReg_i;
-input       [31:0]      ALUResult_i; 
+input       [31:0]      ALUResult_i;
 input       [31:0]      Memdata_i;
 input       [4:0]       RDaddr_i;
 
