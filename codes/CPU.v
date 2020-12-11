@@ -46,7 +46,7 @@ PC PC(
     .rst_i      (rst_i),
     .start_i    (start_i),
     .PCWrite_i  (Hazard_Detection.PCWrite_o),
-    .pc_i       (Add_PC.data_o),
+    .pc_i       (PC_Source.data_o),
     .pc_o       ()
 );
 
@@ -90,7 +90,7 @@ Registers Registers(
     .RS2addr_i  (IFID.instr_o[24:20]),
     .RDaddr_i   (MEMWB.RDaddr_o),
     .RDdata_i   (MUX_RegWriteSrc.data_o),
-    .RegWrite_i (Control.RegWrite_o),
+    .RegWrite_i (MEMWB.RegWrite_o),
     .RS1data_o  (),
     .RS2data_o  ()
 );
@@ -103,7 +103,7 @@ BEQ_Detection BEQ_Detection(
 );
 
 Sign_Extend ImmGen(
-    .data_i     (IFID.instr_o[31:20]),
+    .data_i     (IFID.instr_o),
     .data_o     ()
 );
 

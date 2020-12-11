@@ -27,7 +27,10 @@ always@(posedge clk_i or posedge rst_i) begin
         instr_o <= 32'b0;
         pc_o    <= 32'b0;
     end
-    else if (stall_i || flush_i) begin
+    else if (stall_i) begin
+
+    end
+    else if (flush_i) begin
         instr_o <= 32'b0;
         pc_o    <= 32'b0;
     end

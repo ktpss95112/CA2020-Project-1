@@ -26,7 +26,7 @@ output reg  [1:0]   ALUOp_o;
 output reg          ALUSrc_o;
 output reg          Branch_o;
 
-always @(Op_i) begin
+always @(Op_i, NoOp_i) begin
     if (NoOp_i) begin
         RegWrite_o  <= 1'b0;
         MemtoReg_o  <= 1'b0;
@@ -88,6 +88,16 @@ always @(Op_i) begin
                 ALUSrc_o    <= 1'b0;
                 Branch_o    <= 1'b1;
             end
+
+           default: begin
+               RegWrite_o  <= 1'b0;
+               MemtoReg_o  <= 1'b0;
+               MemRead_o   <= 1'b0;
+               MemWrite_o  <= 1'b0;
+               ALUOp_o     <= 2'b0;
+               ALUSrc_o    <= 1'b0;
+               Branch_o    <= 1'b0;
+           end
 
         endcase
     end
