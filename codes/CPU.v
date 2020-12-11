@@ -10,6 +10,7 @@
 `include "Sign_Extend.v"
 `include "Hazard_Detection.v"
 `include "Pipeline_Registers.v"
+`include "BEQ_Detection.v"
 
 module CPU (
     clk_i,
@@ -24,6 +25,7 @@ input start_i;
 
 
 wire Flush;
+assign Flush = BEQ_Detection.BranchTaken_o;
 
 
 Adder Add_PC(
@@ -32,11 +34,18 @@ Adder Add_PC(
     .data_o     ()
 );
 
+MUX32 PC_Source(
+    .data0_i    (Add_PC.data_o),
+    .data1_i    (Add_Branch_PC.data_o),
+    .select_i   (Flush),
+    .data_o     ()
+);
+
 PC PC(
     .clk_i      (clk_i),
     .rst_i      (rst_i),
     .start_i    (start_i),
-    .PCWrite_i  (1'd1), // TODO
+    .PCWrite_i  (Hazard_Detection.PCWrite_o),
     .pc_i       (Add_PC.data_o),
     .pc_o       ()
 );
@@ -50,10 +59,21 @@ PipelineRegIFID IFID(
     .clk_i      (clk_i),
     .rst_i      (rst_i),
     .instr_i    (Instruction_Memory.instr_o),
-    .instr_o    ()
+    .pc_i       (PC.pc_o),
+    .stall_i    (Hazard_Detection.Stall_o),
+    .flush_i    (Flush),
+    .instr_o    (),
+    .pc_o       ()
+);
+
+Adder Add_Branch_PC(
+    .data1_in   ($signed(ImmGen.data_o) <<< 1),
+    .data2_in   (IFID.pc_o),
+    .data_o     ()
 );
 
 Control Control(
+    .NoOp_i     (Hazard_Detection.NoOp_o),
     .Op_i       (IFID.instr_o[6:0]),
     .RegWrite_o (),
     .MemtoReg_o (),
@@ -73,6 +93,13 @@ Registers Registers(
     .RegWrite_i (Control.RegWrite_o),
     .RS1data_o  (),
     .RS2data_o  ()
+);
+
+BEQ_Detection BEQ_Detection(
+    .Branch_i       (Control.Branch_o),
+    .RS1data_i      (Registers.RS1data_o),
+    .RS2data_i      (Registers.RS2data_o),
+    .BranchTaken_o  ()
 );
 
 Sign_Extend ImmGen(
@@ -175,7 +202,13 @@ MUX32 MUX_RegWriteSrc(
 );
 
 Hazard_Detection Hazard_Detection(
-    .Stall_o    ()
+    .MemRead_i  (IDEX.MemRead_o),
+    .RS1addr_i  (IFID.instr_o[19:15]),
+    .RS2addr_i  (IFID.instr_o[24:20]),
+    .RDaddr_i   (IDEX.instr_o[11:7]),
+    .Stall_o    (),
+    .NoOp_o     (),
+    .PCWrite_o  ()
 );
 
 endmodule

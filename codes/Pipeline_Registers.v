@@ -5,21 +5,35 @@ module PipelineRegIFID (
     clk_i,
     rst_i,
     instr_i,
+    pc_i,
+    stall_i,
+    flush_i,
     instr_o,
+    pc_o
 );
 
 input               clk_i;
 input               rst_i;
 input      [31:0]   instr_i;
+input      [31:0]   pc_i;
+input               stall_i;
+input               flush_i;
 
 output reg [31:0]   instr_o;
+output reg [31:0]   pc_o;
 
 always@(posedge clk_i or posedge rst_i) begin
     if(rst_i) begin
         instr_o <= 32'b0;
+        pc_o    <= 32'b0;
+    end
+    else if (stall_i || flush_i) begin
+        instr_o <= 32'b0;
+        pc_o    <= 32'b0;
     end
     else begin
         instr_o <= instr_i;
+        pc_o    <= pc_i;
     end
 end
 
@@ -38,7 +52,7 @@ module PipelineRegIDEX (
     RS2data_i,
     imm_i,
     instr_i,
-    
+
     RegWrite_o,
     MemtoReg_o,
     MemRead_o,
@@ -114,7 +128,7 @@ module PipelineRegEXMEM (
     ALUResult_i,
     RS2data_i,
     RDaddr_i,
-    
+
     ALUResult_o,
     RS2data_o,
     MemRead_o,
@@ -186,7 +200,7 @@ input                   clk_i;
 input                   rst_i;
 input                   RegWrite_i;
 input                   MemtoReg_i;
-input       [31:0]      ALUResult_i; 
+input       [31:0]      ALUResult_i;
 input       [31:0]      Memdata_i;
 input       [4:0]       RDaddr_i;
 
