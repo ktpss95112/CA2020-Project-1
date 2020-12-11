@@ -65,7 +65,7 @@ module PipelineRegIDEX (
     RS1data_o,
     RS2data_o,
     imm_o,
-    instr_o,
+    instr_o
 );
 
 input                         clk_i;
@@ -80,6 +80,8 @@ input           [31:0]        RS1data_i;
 input           [31:0]        RS2data_i;
 input           [31:0]        imm_i;
 input           [31:0]        instr_i;
+input           [4:0]         RS1addr_i;
+input           [4:0]         RS2addr_i;
 
 output reg                    RegWrite_o;
 output reg                    MemtoReg_o;
@@ -91,6 +93,8 @@ output reg      [31:0]        RS1data_o;
 output reg      [31:0]        RS2data_o;
 output reg      [31:0]        instr_o;
 output reg      [31:0]        imm_o;
+output reg      [4:0]         RS1addr_o;
+output reg      [4:0]         RS2addr_o;
 
 always@(posedge clk_i or posedge rst_i) begin
     if(rst_i) begin
@@ -104,6 +108,8 @@ always@(posedge clk_i or posedge rst_i) begin
         RS2data_o   <= 32'b0;
         imm_o       <= 32'b0;
         instr_o     <= 32'b0;
+        RS1addr_o   <= 5'b0;
+        RS2addr_o   <= 5'b0;
     end
     else begin
         RegWrite_o  <= RegWrite_i;
@@ -116,6 +122,8 @@ always@(posedge clk_i or posedge rst_i) begin
         RS2data_o   <= RS2data_i;
         imm_o       <= imm_i;
         instr_o     <= instr_i;
+        RS1addr_o   <= RS1addr_i;
+        RS2addr_o   <= RS2addr_i;
     end
 end
 
