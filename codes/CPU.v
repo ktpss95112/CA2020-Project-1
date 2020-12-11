@@ -134,7 +134,7 @@ PipelineRegEXMEM EXMEM(
     .MemRead_i      (IDEX.MemtoReg_o),
     .MemWrite_i     (IDEX.MemWrite_o),
     .ALUResult_i    (ALU.data_o),
-    .RS2data_i      (Registers.RS2data_o),
+    .RS2data_i      (MUX_Forward_B.data_o),
     .RDaddr_i       (IDEX.instr_o[11:7]),
     .ALUResult_o    (),
     .RS2data_o      (),
@@ -193,7 +193,7 @@ Forwarding_Unit Forwarding_Unit(
 
 MUX32_4 MUX_Forward_A(
     .data00_i   (IDEX.RS1data_o),
-    .data01_i   (MEMWB.ALUResult_o),
+    .data01_i   (MUX_RegWriteSrc.data_o),
     .data10_i   (EXMEM.ALUResult_o),
     .data11_i   (0),
     .select_i   (Forwarding_Unit.ForwardA_o),
@@ -202,7 +202,7 @@ MUX32_4 MUX_Forward_A(
 
 MUX32_4 MUX_Forward_B(
     .data00_i   (IDEX.RS2data_o),
-    .data01_i   (MEMWB.ALUResult_o),
+    .data01_i   (MUX_RegWriteSrc.data_o),
     .data10_i   (EXMEM.ALUResult_o),
     .data11_i   (0),
     .select_i   (Forwarding_Unit.ForwardB_o),
